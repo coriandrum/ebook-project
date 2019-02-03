@@ -139,9 +139,9 @@ const loadBook = function(init) {
 
     // Regions
     if ($.isTouch) {
-        flipbook.on('touchstart', (e, viewport)=>{m.regionClick(e, viewport)});
+        flipbook.on('touchstart', (e, viewport)=>{m.regionClick(e, viewport, flipbook)});
     } else {
-        flipbook.click((e, viewport)=>{m.regionClick(e, viewport)});
+        flipbook.click((e, viewport)=>{m.regionClick(e, viewport, flipbook)});
     }
     // Events for the next button
     $('.next-button').on($.mouseEvents.over, function() {
