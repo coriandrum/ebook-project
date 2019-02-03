@@ -71,6 +71,6 @@ gulp.task('webpack-build', (cb) => {
 });
 
 
-gulp.task('p', () => runSequence('rimraf', 'webpack-build'));
-gulp.task('d', ['webpack-dev-server']);
-gulp.task('default', ['webpack-dev-server']);
+gulp.task('p', gulp.series('rimraf', 'webpack-build'));
+gulp.task('d', gulp.series('webpack-dev-server'));
+gulp.task('default', gulp.series('webpack-dev-server'));

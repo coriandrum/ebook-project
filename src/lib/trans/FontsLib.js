@@ -19,3 +19,5 @@ var FontsLib = (function (){
 	_this.FTPYStr = FTPYStr;
 	return _this;
 })();
+
+export default FontsLib;

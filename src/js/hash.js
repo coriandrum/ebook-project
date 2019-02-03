@@ -38,6 +38,7 @@ var hashes = {},
 	},
 
 	startTimer = function() {
+		
 		if (!timer)
 			timer = setInterval(function() {
 				if (num>0 && currentUrl!=window.location.href) {
@@ -49,6 +50,7 @@ var hashes = {},
 	},
 
 	stopTimer = function() {
+
 		if (timer) {
 			clearInterval(timer);
 			timer = null;

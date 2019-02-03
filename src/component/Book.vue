@@ -13,23 +13,7 @@ div#viewer.container-fluid
         .page-state
             .page-now
             .page-total
-        .book-control
-            div.ctrl-nav
-                div.nav-body.active
-                    div.zoom-icon.zoom-icon-in(data-toggle="tooltip" data-placement="left" data-navTip="0")
-                        i.fa.fa-expand(aria-hidden="true")
-                    div.thumb-toggle(data-toggle="tooltip" data-placement="left" data-navTip="1")
-                        i.fa.fa-th-large(aria-hidden="true")
-                    //- div.xmlMenu-toggle(data-toggle="tooltip" data-placement="left" data-navTip="2")
-                        i.fa.fa-book(aria-hidden="true")
-                    div.mode-toggle(data-toggle="tooltip" data-placement="left" data-navTip="3")
-                        i.fa.fa-toggle-on(aria-hidden="true")
-                        i.fa.fa-toggle-off(aria-hidden="true")
-                    //- div.print-func(data-toggle="tooltip" data-placement="left" data-navTip="4" v-on:click="openPrint")
-                        i.fa.fa-print(aria-hidden="true")
-                    div.nav-icon.active
-                        i.fa.fa-caret-up(aria-hidden="true")   
-                        i.fa.fa-caret-down(aria-hidden="true")   
+        ControlNav(:handleEvents="handleEvents")
         .slider-control
             #slider-bar.turnjs-slider
                 #slider
@@ -47,14 +31,14 @@ div#viewer.container-fluid
                         form.print-function-form
                             div.form-check.form-row
                                 label.form-check-label
-                                    input.form-check-input#printFn01(type="radio" name="printFn" v-model="print.fn" value="1") 
+                                    input.form-check-input#printFn01(type="radio" name="printFn" v-model="print.fn" value="1")
                                     div.col-auto {{s[t].printModal[1]}}
                             div.form-check.form-row
                                 label.form-check-label
-                                    input.form-check-input#printFn02(type="radio" name="printFn" v-model="print.fn" value="2") 
+                                    input.form-check-input#printFn02(type="radio" name="printFn" v-model="print.fn" value="2")
                                     div.col-auto
                                         |{{s[t].printModal[2]}}
-                                        select.custom-select-sm.mr-2.ml-2(v-model="print.num")
+                                        select.custom-select-sm.mr-2.ml-2(v-model="print.num" @change="customPageHandler")
                                             option(disabled value="") {{s[t].printModal[3]}}
                                             option(v-for="i in 10" , :value="i") {{i}}
                                         |{{s[t].printModal[4]}}
@@ -65,11 +49,13 @@ div#viewer.container-fluid
 </template>
 
 <script>
-import book from '../js/book';
+import loadBook from '../js/book';
 import maga from '../js/magazine';
 import axios from 'axios';
-import '../../node_modules/print.js/dist/print.min.js';
+import 'print-js/dist/print.min.js';
 import '../js/hash';
+import ControlNav from './ControlNav.vue';
+import waterMarkImg from '../img/watermark.png';
 
 export default {
     data() {
@@ -81,7 +67,7 @@ export default {
                 display   : 'double',
                 direction : 'ltr',
                 duration  : 800,
-                lang      : null,
+                lang      : 'zh-tw',
                 regionData: null
             },
             err: {
@@ -90,28 +76,34 @@ export default {
             },
             print: {
                 modal     : false,
-                fn        : null,
+                fn        : '1',
                 num       : null
             },
             loaderState   : false,
             s: {
                 "ZH-TW": {
-                    navTips: ['放大','瀏覽縮圖','目錄','單/雙頁切換','列印'],
+                    navTips: ['放大','瀏覽縮圖','目錄','單/雙頁切換','列印','旋轉'],
                     printModal: ['選擇列印範圍', '列印本頁','從本頁起列印','選擇...','頁(每次上限10頁)','確定','取消'],
                     popover:  ['點擊或拖曳翻頁','點擊二下放大']
                 },
                 "ZH-CN": {
-                    navTips: ['放大','浏览缩图','目录','单/双页切换','列印'],
+                    navTips: ['放大','浏览缩图','目录','单/双页切换','列印','旋转'],
                     printModal: ['选择列印范围', '列印本页','从本页起列印','选择...','页(每次上限10页)','确定','取消'],
                     popover: ['点击或拖曳翻页','点击二下放大']
                 },
                 "EN": {
-                    navTips: ['Zoom', 'Thumbnail', 'Directory', 'Single / Double Display', 'Print'],
+                    navTips: ['Zoom', 'Thumbnail', 'Directory', 'Single / Double Display', 'Print', 'Rotate'],
                     printModal: ['Select Print Range', 'Print this page', 'Print', 'Select...', 'pages from this page. (Limit 10 pages per time)','OK','Cancel'],
                     popover: ['Click arrow or drag to flip book.', 'Double click to zoom in.']
                 }
+            },
+            handleEvents: {
+                openPrint: this.openPrint
             }
         }
+    },
+    components: {
+        ControlNav
     },
     computed: {
         printVaild: function () {
@@ -131,33 +123,26 @@ export default {
             return lang.toUpperCase()
         }
     },
-    methods: {    
+    methods: {
         getBook(sTK, sFileID, apiUrl) {
             return new Promise((resolve, reject) => {
-                const token = sTK || 'unToken';
-                const bookID = sFileID || 'unFileID';
-                //console.log('Connect book... =>', {token, bookID});
-                setTimeout( async ()=>{
-                    axios({
-                        method: 'GET',
-                        url: apiUrl,
-                        params: {sTK:token, sFileID:bookID}
-                    }).then((response)=>{
-                        //console.log('[OK]',response.status);
-                        const data = response.data;
-                        //console.log(data);
-                        if (data.iErrorCode === 0) {
-                            //console.log('<-- Success -->');
-                        } else {
-                            //console.log('<-- Invalid -->');
-                        }
-                        resolve(data);
-                    }).catch((err)=>{
-                        //console.log('<-- Fail load -->');
-                        console.log('[ERR]',err.message);
-                        reject(err.message);
-                    })
-                }, 1000);
+                axios({
+                    method: 'GET',
+                    url: apiUrl,
+                }).then((response)=>{
+                    const data = response.data;
+                    //console.log(data);
+                    if (data.iErrorCode === 0) {
+                        //console.log('<-- Success -->');
+                    } else {
+                        //console.log('<-- Invalid -->');
+                    }
+                    resolve(data);
+                }).catch((err)=>{
+                    //console.log('<-- Fail load -->');
+                    //console.log('[ERR]',err.message);
+                    reject(err.message);
+                });
             });
         },
         getQuery: function (sSearch) {
@@ -170,13 +155,14 @@ export default {
             }
             return oGetVars;
         },
-        async bookInit (data) {
+        bookInit: async function (data) {
             const vm = this;
             const query = this.getQuery(window.location.search);
             const apiUrl = window.ebookAPI || './';
-            //const apiUrl = "./50004247.json";
+            console.log(apiUrl);
             try {
                 const BookAjax = await this.getBook(query.sTK, query.sFileID, apiUrl);
+                console.log(BookAjax);
                 //console.log(BookAjax);
                 vm.bookData.data = BookAjax;
                 vm.bookData.data.lang = query.lang || window.navigator.language;
@@ -185,8 +171,8 @@ export default {
                 vm.bookData.pageHeight = BookAjax.iY / 2;
                 vm.bookData.pageNum = BookAjax.iTotalPage;
                 vm.bookData.regionData = BookAjax.regionData;
-                if(BookAjax.iErrorCode==0) {
-                    book.loadBook(vm.bookData);
+                if(BookAjax.iErrorCode == '0') {
+                    loadBook(vm.bookData);
                     $('[data-toggle="tooltip"]').tooltip({
                         title: function () {
                             let n = parseInt(this.getAttribute('data-navTip'));
@@ -203,8 +189,9 @@ export default {
                     vm.err.message = '權限不足，拒絕存取';
                 }
             } catch (error) {
+                console.error(error);
                 vm.err.status = true;
-                vm.err.message = error;
+                vm.err.message = error.toString();
             }
         },
         openPrint() {
@@ -220,7 +207,7 @@ export default {
             let pages      = [];//圖片列陣
             let outPage    = print.fn=="2"?print.num:2;//輸出頁數
             let pathParse  = maga.parsePath(path);//解析資料
-            
+
             vm.loaderState = true;
             if(document.getElementById('printTarget')) {
                 let target = document.getElementById('printTarget');
@@ -233,8 +220,8 @@ export default {
                 outPage = (page==1)?1:outPage;
                 outPage = (mode=="single")?1:outPage;
                 for (let i=0; i<outPage; i++) {
-                    let pageString = maga.padLeft( 
-                            page + i + pathParse.strPage, 
+                    let pageString = maga.padLeft(
+                            page + i + pathParse.strPage,
                             pathParse.padLeftNum
                         );
                     let pageSrc =  pathParse.path + pageString + '.jpg';
@@ -244,7 +231,7 @@ export default {
                 //列印自此往後n頁
                 outPage = (outPage>10)?10:outPage;
                 for (let i=0; i<outPage; i++) {
-                    let pageString = maga.padLeft( 
+                    let pageString = maga.padLeft(
                             page + i + pathParse.strPage,
                             pathParse.padLeftNum
                         );
@@ -273,7 +260,7 @@ export default {
                     td.style.overflow = "hidden";
                     td.style.height   = "100%";
                     td.style.width    = "100%";
-                    
+
                     //tr.style.border = "1px solid red";
                     //wm.style.border = "1px solid green";
                     let img = new Image();
@@ -285,7 +272,7 @@ export default {
                     //img.style.border = "1px solid red";
                     img.onload = function () {
                         let wm = new Image();
-                        wm.src = './img/watermark.png';
+                        wm.src = waterMarkImg;
 
                         wm.style.position = "absolute";
                         wm.style.top      = "30%";
@@ -319,23 +306,17 @@ export default {
                 vm.loaderState = false;
                 $('#printModal').modal('hide');
             })
+        },
+        customPageHandler(evt) {
+            this.print.fn = '2';
         }
     },
-    created() {
-        
-    },
-    destroyed() {
-        
-    },
     mounted() {
+        $('#canvas').hide();
         const init = this.bookData;
         this.bookInit(init);
-        $(function () {
-            $('#canvas').hide();
-        })
     }
 }
-    
 </script>
 
 <style lang="stylus" src="../css/book.styl"></style>

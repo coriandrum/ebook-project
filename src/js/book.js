@@ -29,10 +29,11 @@ const loadBook = function(init) {
                 flipbook.turn('next');
             },
             resize: function(event, scale, page, pageElement) {
-                if (scale == 1)
+                if (scale === 1) {
                     m.loadSmallPage(page, pageElement, flipbook);
-                else
+                } else {
                     m.loadLargePage(page, pageElement, flipbook);
+                }
             },
             zoomIn: function() {
                 $('.book-control').hide();
@@ -78,7 +79,7 @@ const loadBook = function(init) {
             }
         }
     });
-        
+
     viewport.on('zoom.doubleTap', function(e) { m.zoomTo(e, $(this))});
 
     // Zoom event
@@ -111,7 +112,7 @@ const loadBook = function(init) {
         }
     });
 
-    // URIs - Format #/page/1 
+    // URIs - Format #/page/1
     Hash.on('^p\/([0-9]*)$', {
         yep: function(path, parts) {
             var page = parts[1];
@@ -138,9 +139,9 @@ const loadBook = function(init) {
 
     // Regions
     if ($.isTouch) {
-        flipbook.on('touchstart', e => {m.regionClick(e, viewport, flipbook)});
+        flipbook.on('touchstart', (e, viewport)=>{m.regionClick(e, viewport)});
     } else {
-        flipbook.click(e => {m.regionClick(e, viewport, flipbook)});
+        flipbook.click((e, viewport)=>{m.regionClick(e, viewport)});
     }
     // Events for the next button
     $('.next-button').on($.mouseEvents.over, function() {
@@ -233,37 +234,80 @@ const loadBook = function(init) {
     m.initThumb(flipbook);
     m.initZoomIcon();
 
-    flipbook.attr('display-mode', flipbook.turn('display'));
+    var displayMode = flipbook.turn('display');
+
+    flipbook.attr('display-mode', displayMode);
+    var rotateButton = $('.rotate-icon');
+    rotateButton.css({
+        display: displayMode === 'single' ? 'block' : 'none'
+    });
     $('.mode-toggle').attr('display-mode', flipbook.turn('display'));
-    $('.mode-toggle').click(function() {
+
+    $('.mode-toggle').click(function(evt) {
         var mode = flipbook.turn('display');
         var init = flipbook.turn('options');
         var w = flipbook.width();
         var h = flipbook.height();
         var toggle = $(this);
+        var isDouble = (mode === 'double');
+        var isInitDouble = (init.display === 'double');
+
         var updateWidth;
-        // console.log('Change to ' + mode);
-        if(mode=='double'){
-            flipbook.turn('display','single');
-            updateWidth = init.display=='double'?init.width/2:init.width;
-            toggle.attr('display-mode', 'single');
-            flipbook.attr('display-mode', 'single');
+        var updateMode;
+
+        if(isDouble){
+            updateMode = 'single';
+            updateWidth = isInitDouble ? init.width / 2 : init.width;
             $('.gsi-ebook .page').removeClass('odd').removeClass('even');
         } else {
-            flipbook.turn('display','double');
-            updateWidth = init.display=='double'?init.width:init.width*2;
-            toggle.attr('display-mode', 'double');
-            flipbook.attr('display-mode', 'double');
+            updateMode = 'double';
+            updateWidth = isInitDouble ? init.width : init.width * 2;
+            resetRotate(flipbook);
         }
+
+        flipbook.turn('display', updateMode);
+        toggle.attr('display-mode', updateMode);
+        flipbook.attr('display-mode', updateMode);
+        rotateButton.css({
+            display: updateMode === 'single' ? 'block' : 'none'
+        })
         flipbook.turn('size', updateWidth, init.height);
         m.resizeViewport(flipbook, viewport);
     });
 
+    flipbook.attr('rotate-deg', '0');
+    $('.rotate-icon').click(function(event) {
+        var rotate = parseInt(flipbook.attr('rotate-deg'), 10);
+        var delay = 300;
+        rotate = rotate - 90;
+        flipbook.attr('rotate-deg', rotate % 360);
+        flipbook.css({
+            transform: `rotate(${rotate}deg)`,
+            transition: `transform ${delay}ms`
+        });
+        if (rotate % 360 === 0) {
+            setTimeout(() => {
+                flipbook.css({
+                    transform: `rotate(${0}deg)`,
+                    transition: 'transform 0ms'
+                });
+            }, delay);
+        };
+    });
+
     m.resizeViewport(flipbook, viewport);
     flipbook.addClass('animated');
-    
+
     canvas.fadeIn(1000);
-}
+};
+
+var resetRotate = function(book) {
+    book.attr('rotate-deg', '0');
+    book.css({
+        transform: `rotate(${0}deg)`,
+        transition: 'transform 0ms'
+    });
+};
 
 function setOption(init) {
     var w = window.innerWidth;
@@ -319,6 +363,7 @@ function setOption(init) {
                 }
                 $('#slider').slider({value: sliderView});
                 $('.page-state .page-now').text(page);
+                resetRotate(book);
             },
             turned: function(event, page, view) {
                 var book = $(this);
@@ -344,7 +389,4 @@ function setOption(init) {
     }
 }
 
-
-module.exports = {
-    loadBook
-}
+export default loadBook;

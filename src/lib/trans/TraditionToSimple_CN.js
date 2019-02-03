@@ -5,6 +5,8 @@
  * @author Hwl <weigewong@gmail.com>
  */
 
+import FontsLib from './FontsLib';
+
 function TraditionToSimple_CN(){
 	/**
 	 * 该类的对象
@@ -194,3 +196,8 @@ function getCookie(Name)
 	 }
 }
 
+export {
+	TraditionToSimple_CN,
+	setCookie,
+	getCookie
+};

@@ -26,7 +26,9 @@ module.exports = {
     initAutoFlip,
     initZoomIcon,
     parsePath
-}
+};
+
+import { TraditionToSimple_CN } from '../lib/trans/TraditionToSimple_CN.js';
 
 function addPage (page, book) {
     var id, pages = book.turn('pages');
@@ -141,24 +143,24 @@ var regionDataNormal = [
 
 // Load regions
 function loadRegions(page, element, book) {
-    var regionData = book.turn('options').region || {};
-    var region = regionData[page] || false;
-    if (region) {
-        if (book.turn('display') === 'double') {
-            var data = region;
-        } else {
-            var regionDataMobile = region;
-            for (var i = 0; i < regionDataMobile.length; i++) {
-                var item = region[i];
-                item.x = item.x / 2;
-                item.width = item.width / 2;
-            }
-            var data = regionDataMobile;
-        }
-        $.each(data, function(key, region) {
-            addRegion(region, element, book);
-        });
-    }
+  var regionData = book.turn('options').region || {};
+  var region = regionData[page] || false;
+  if (region) {
+      if (book.turn('display') === 'double') {
+          var data = region;
+      } else {
+          var regionDataMobile = region;
+          for (var i = 0; i < regionDataMobile.length; i++) {
+              var item = region[i];
+              item.x = item.x / 2;
+              item.width = item.width / 2;
+          }
+          var data = regionDataMobile;
+      }
+      $.each(data, function(key, region) {
+          addRegion(region, element, book);
+      });
+  }
 }
 
 // Add region
@@ -191,8 +193,8 @@ function regionClick(event, viewport, book) {
 
 // Process the data of every region
 function processRegion(region, regionType, viewport, book) {
-    //console.log(region.attr('region-data'));
-    var data = decodeParams(region.attr('region-data'));
+  //console.log(region.attr('region-data'));
+  var data = decodeParams(region.attr('region-data'));
     switch (regionType) {
         case 'link':
             window.open(data.url);
@@ -226,11 +228,11 @@ function disableControls(page, init, book){
         var $prev = $('.next-button');
     }
 
-    if (page == 1) 
+    if (page == 1)
         $prev.hide();
     else
         $prev.show();
-    
+
     if (page == book.turn('pages'))
         $next.hide();
     else
@@ -243,7 +245,7 @@ function resizeViewport(book, viewport) {
         height = $(window).height(),
         options = book.turn('options'),
         display = book.turn('display');
-    
+
     book.removeClass('animated');
     viewport.css({
         width: width,
@@ -284,7 +286,7 @@ function resizeViewport(book, viewport) {
         //// console.log('options',options.width, options.height);
         //// console.log('bound',bound.width, bound.height);
     }
-    
+
     //Menu review
     resizeMenu();
 
@@ -320,9 +322,9 @@ function getViewNumber(book, page) {
 }
 
 function moveBar(yes) {
-    if (Modernizr && Modernizr.csstransforms) {
-        $('#slider .ui-slider-handle').css({ zIndex: yes ? -1 : 10000 });
-    }
+    //if (Modernizr && Modernizr.csstransforms) {
+    $('#slider .ui-slider-handle').css({ zIndex: yes ? -1 : 10000 });
+    //}
 }
 
 function setPreview(view) {
@@ -441,7 +443,7 @@ function initThumb(book){
             var $thumbPic = $('<a class="thumb-pic" href="#p/'+(i)+'">'+text+'</a>');
             var $thumbImg = $('<img />').attr('src', tP.path + 'thumb_' + p + '.jpg');
             $thumbImg.appendTo($thumbPic);
-            //$thumbPic.click(()=>menuToggle(menu))
+            $thumbPic.click(() => menuToggle(menu));
             $thumbPic.appendTo($thumbItem);
             $thumbItem.appendTo($menuBody);
         }
@@ -453,11 +455,13 @@ function initThumb(book){
 function initXmlMenu(book){
     initSideNav('.xmlMenu',book, function (book, menu) {
         var $menuBody = $('<div />');
-        var xmlUrl = book.turn('options').data.sCatalogPath+'/catalog.xml';
-        
+        var sFileID = book.turn('options').data.sFileID;
+        var xmlUrl = '/Files/xml/' + sFileID + '/Catalog.xml';
+
+
         var t2s = new TraditionToSimple_CN();
         //抓取xml目錄檔
-        $.get(proxyURL(xmlUrl), function(xml) {
+        $.get(xmlUrl, function(xml) {
             // console.log('Get XML', $(xml));
             var chapters = xml.getElementsByTagName('METS:div');
             if(!chapters.length>0) {
@@ -479,7 +483,7 @@ function initXmlMenu(book){
                 var label = '<span class="chapter">'+txt+'</span>';
                 var page = chapter.attr('ORDERLABEL');
                 var $menuItem = $('<li><a href="#p/'+page+'">'+label+'<span class="page">'+page+'</span></a></li>');
-                //$menuItem.click(()=>menuToggle(menu));
+                $menuItem.click(() => menuToggle(menu));
                 $lists.append($menuItem);
             }
             $lists.appendTo($menuBody);
@@ -509,7 +513,7 @@ function initSideNav(menuClass ,book, callback){
     var $menuBody = callback(book, $menu);
     //建立關閉按鈕
     var $close = $('<div class="close"><i class="fa fa-times" aria-hidden="true"></i></div>');
-    
+
     //按鈕事件
     $btn.click(()=>menuToggle($menu));
     $close.click(()=>menuToggle($menu));
@@ -605,7 +609,7 @@ function initZoomIcon () {
             $('.viewport').zoom('zoomIn');
         } else {
             $('.viewport').zoom('zoomOut');
-        }            
+        }
     });
 }
 

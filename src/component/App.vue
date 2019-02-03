@@ -2,22 +2,19 @@
 
 <template lang="pug">
 #app
-  transition(name="fade" mode="out-in")
-    Book
+    transition(name="fade" mode="out-in")
+        Book
 </template>
 
 <script>
-
 import Book from './Book.vue'
-
 export default {
-  data() {
-		return {
-		};
-  },
-  components: {
-		Book
-  }
+    data() {
+        return {
+        };
+    },
+    components: {
+        Book
+    }
 };
 </script>
-

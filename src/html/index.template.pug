@@ -10,24 +10,7 @@ html
 		meta(property="og:title" content="")
 		meta(property="og:description" content="")
 		meta(property="og:image" content="")
-
-		link(href="./lib/font-awesome/css/font-awesome.min.css", rel="stylesheet")
-		link(href='./lib/bootstrap-v4/bootstrap.min.css', rel='stylesheet')
 		script.
-			var ebookAPI = "./db.json";
+			var ebookAPI = window.top.ebookAPI;
 	body
 		#app
-		//- book.js lib
-		script(src="./lib/jquery/jquery-3.2.1.min.js")
-		script(src="./lib/jquery/jquery-ui-1.12.1.min.js")
-		script(src="./lib/jquery/jquery.ui.touch-punch.min.js")
-		script(src="./lib/turnjs/modernizr.2.5.3.min.js")
-
-		//- bootstrap4
-		script(src='./lib/bootstrap-v4/tether-1.4.0.min.js')
-		script(src='./lib/bootstrap-v4/bootstrap.min.js')
-
-		//-trans
-		script(src='./lib/trans/FontsLib.js')
-		script(src='./lib/trans/TraditionToSimple_CN.js')
-			
