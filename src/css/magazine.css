@@ -1,0 +1,323 @@
+body{
+	overflow:hidden;
+	margin:0;
+	padding:0;
+}
+.viewport {
+	background-color:#f2f2f2;
+}
+.viewport .viewport-container{
+	position:absolute;
+	top:50%;
+	left:50%;
+	width:100%;
+	height:100%;
+	margin:auto;
+}
+
+.viewport .gsi-ebook{
+	width:922px;
+	height:600px;
+	left:-461px;
+	top:-300px;
+}
+
+.viewport .page{
+	width:461px;
+	height:600px;
+	background-color:white;
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+}
+
+.viewport .zoomer .region{
+	display:none;
+}
+
+.gsi-ebook .region{
+	position:absolute;
+	overflow:hidden;
+	background:#0066FF;
+	opacity:0.2;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	-ms-border-radius:10px;
+	-o-border-radius:10px;
+	border-radius:10px;
+	cursor:pointer;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+	filter: alpha(opacity=20);
+}
+
+.gsi-ebook .region:hover{
+	opacity:0.5;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+}
+
+.gsi-ebook .region.zoom{
+	opacity:0.01;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
+	filter: alpha(opacity=1);
+}
+
+.gsi-ebook .region.zoom:hover{
+	opacity:0.2;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+	filter: alpha(opacity=20);
+}
+
+.gsi-ebook .page{
+	-webkit-box-shadow:0 0 20px rgba(0,0,0,0.2);
+	-moz-box-shadow:0 0 20px rgba(0,0,0,0.2);
+	-ms-box-shadow:0 0 20px rgba(0,0,0,0.2);
+	-o-box-shadow:0 0 20px rgba(0,0,0,0.2);
+	box-shadow:0 0 20px rgba(0,0,0,0.2);
+}
+
+.gsi-ebook .page-wrapper{
+   -webkit-perspective:2000px;
+   -moz-perspective: 2000px;
+   -ms-perspective: 2000px;
+   perspective: 2000px;
+}
+
+.viewport .page img{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	margin:0;
+}
+
+.gsi-ebook .gradient{
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+}
+
+.gsi-ebook .page .gradient {
+	background-image: linear-gradient(to left, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.25) 100%);;
+}
+.gsi-ebook[dir="rtl"] .even .gradient,
+.gsi-ebook .even .gradient{
+	background-image:linear-gradient(to right, rgba(0, 0, 0, 0) 95%, rgba(0,0,0,0.15) 100%);
+}
+
+.gsi-ebook[dir="rtl"] .odd .gradient,
+.gsi-ebook .odd .gradient{
+	background-image:linear-gradient(to left, rgba(0, 0, 0, 0) 95%, rgba(0,0,0,0.15) 100%);
+}
+
+.gsi-ebook .page.p1 .gradient {
+	background-image: none;
+}
+
+.viewport .loader{
+	background-image:url(../img/loader.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 10%;
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+}
+
+.viewport .shadow{
+	-webkit-box-shadow:0 0 20px #ccc;
+	-moz-box-shadow:0 0 20px #ccc;
+	-o-box-shadow:0 0 20px #ccc;
+	-ms-box-shadow:0 0 20px #ccc;
+	box-shadow:0 0 20px #ccc;
+}
+
+.viewport .zoom-in .next-button,
+.viewport .zoom-in .previous-button{
+	display:none;
+}
+
+.animated{
+	-webkit-transition:margin-left 0.5s;
+	-moz-transition:margin-left 0.5s;
+	-ms-transition:margin-left 0.5s;
+	-o-transition:margin-left 0.5s;
+	transition:margin-left 0.5s;
+}
+
+.thumbnails{
+	position:absolute;
+	bottom:0;
+	left:0;
+	width:100%;
+	height:140px;
+	z-index:1;
+}
+
+.thumbnails > div{
+	width:1050px;
+	height:100px;
+	margin:20px auto;
+}
+
+.thumbnails ul{
+	margin:0;
+	padding:0;
+	text-align:center;
+	-webkit-transform:scale3d(0.5, 0.5, 1);
+	-moz-transform:scale3d(0.5, 0.5, 1);
+	-o-transform:scale3d(0.5, 0.5, 1);
+	-ms-transform:scale3d(0.5, 0.5, 1);
+	transform:scale3d(0.5, 0.5, 1);
+	-webkit-transition:-webkit-transform ease-in-out 100ms;
+	-moz-transition:-moz-transform ease-in-out 100ms;
+	-ms-transition:-ms-transform ease-in-out 100ms;
+	-o-transition:-o-transform ease-in-out 100ms;
+	transition:transform ease-in-out 100ms;
+}
+
+.thumbanils-touch ul{
+	-webkit-transform:none;
+	-moz-transform:none;
+	-o-transform:none;
+	-ms-transform:none;
+	transform:none;
+}
+
+.thumbnails-hover ul{
+	-webkit-transform:scale3d(0.6, 0.6, 1);
+	-moz-transform:scale3d(0.6, 0.6, 1);
+	-o-transform:scale3d(0.6, 0.6, 1);
+	-ms-transform:scale3d(0.6, 0.6, 1);
+	transform:scale3d(0.6, 0.6, 1);
+}
+
+.thumbnails li{
+	list-style:none;
+	display:inline-block;
+	margin:0 5px;
+	-webkit-box-shadow:0 0 10px #ccc;
+	-moz-box-shadow:0 0 10px #ccc;
+	-ms-box-shadow:0 0 10px #ccc;
+	-o-box-shadow:0 0 10px #ccc;
+	box-shadow:0 0 10px  #ccc;
+	-webkit-transition:-webkit-transform 60ms;
+	-moz-transition:-webkit-transform 60ms;
+	-o-transition:-webkit-transform 60ms;
+	-ms-transition:-webkit-transform 60ms;
+	transition:-webkit-transform 60ms;
+}
+
+.thumbnails li span{
+	display:none;
+}
+
+.thumbnails .current{
+	-webkit-box-shadow:0 0 10px red;
+	-moz-box-shadow:0 0 10px red;
+	-ms-box-shadow:0 0 10px red;
+	-o-box-shadow:0 0 10px red;
+	box-shadow:0 0 10px red;
+}
+
+.thumbnails .thumb-hover{
+	-webkit-transform:scale3d(1.3, 1.3, 1);
+	-moz-transform:scale3d(1.3, 1.3, 1);
+	-o-transform:scale3d(1.3, 1.3, 1);
+	-ms-transform:scale3d(1.3, 1.3, 1);
+	transform:scale3d(1.3, 1.3, 1);
+
+	-webkit-box-shadow:0 0 10px #666;
+	-moz-box-shadow:0 0 10px #666;
+	-ms-box-shadow:0 0 10px #666;
+	-o-box-shadow:0 0 10px #666;
+	box-shadow:0 0 10px #666;
+}
+
+.thumbanils-touch .thumb-hover{
+	-webkit-transform:none;
+	-moz-transform:none;
+	-o-transform:none;
+	-ms-transform:none;
+	transform:none;
+}
+
+.thumbnails .thumb-hover span{
+	position:absolute;
+	bottom:-30px;
+	left:0;
+	z-index:2;
+	width:100%;
+	height:30px;
+	font:bold 15px arial;
+	line-height:30px;
+	color:#666;
+	display:block;
+	cursor:default;
+}
+
+.thumbnails img{
+	float:left;
+}
+
+.exit-message{
+	position: absolute;
+	top:10px;
+	left:0;
+	width:100%;
+	height:40px;
+	z-index:10000;
+}
+
+.exit-message > div{
+	width:140px;
+	height:30px;
+	margin:auto;
+	background:rgba(0,0,0,0.5);
+	text-align:center;
+	font:12px arial;
+	line-height:30px;
+	color:white;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	-ms-border-radius:10px;
+	-o-border-radius:10px;
+	border-radius:10px;
+}
+
+/*
+.zoom-icon{
+	position:absolute;
+	z-index:1000;
+	width:22px;
+	height:22px;
+	top:10px;
+	right:10px;
+	background-image:url(../pics/zoom-icons.png);
+	background-size:88px 22px;
+}
+
+.zoom-icon-in{
+	background-position:0 0;
+	cursor: pointer;
+}
+
+.zoom-icon-in.zoom-icon-in-hover{
+	background-position:-22px 0;
+	cursor: pointer;
+}
+
+.zoom-icon-out{
+	background-position:-44px 0;
+}
+
+.zoom-icon-out.zoom-icon-out-hover{
+	background-position:-66px 0;
+	cursor: pointer;
+}
+*/

@@ -1,0 +1,17 @@
+{
+    "iErrorCode": 0,
+    "sDirPath": "./book_src/1000071/JPG/",
+    "iTotalPage": 49,
+    "sThumbPath": "./book_src/1000071/THUMB/",
+    "sCatalogPath": "",
+    "iX": 1075,
+    "iY": 1518,
+    "regionData": {
+        "3": [
+            { "x": 305, "y": 630, "width": 245, "height": 247, "class": "to-page", "data": { "page": 4 } },
+            { "x": 550, "y": 630, "width": 245, "height": 247, "class": "to-page", "data": { "page": 11 } },
+            { "x": 305, "y": 877, "width": 245, "height": 247, "class": "to-page", "data": { "page": 21 } },
+            { "x": 550, "y": 877, "width": 245, "height": 247, "class": "to-page", "data": { "page": 40 } }
+        ]
+    }
+}
